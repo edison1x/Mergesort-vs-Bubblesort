@@ -1,0 +1,116 @@
+import matplotlib.pyplot as plt
+import random
+import time
+import statistics
+
+
+def create_test_set(data_set_size, num_datasets):
+    two_d_array = []
+    for i in range(num_datasets):
+        dataset = []
+        for j in range(data_set_size):
+            dataset.append(random.randint(0, data_set_size))
+        two_d_array.append(dataset)
+    return two_d_array
+
+
+def merge_sort(dataset, fp, rp):
+    if fp < rp:
+        mp = (fp + rp) // 2
+        left_half = merge_sort(dataset, fp, mp)
+        right_half = merge_sort(dataset, mp + 1, rp)
+        return merge(left_half, right_half)
+    else:
+        return [dataset[fp]]
+
+def merge(list_1: list, list_2: list):
+    temp_list = []
+    while len(list_1) > 0 and len(list_2) > 0:
+        if list_1[0] < list_2[0]:
+            temp_list.append(list_1[0])
+            list_1.remove(list_1[0])
+        else:
+            temp_list.append(list_2[0])
+            list_2.remove(list_2[0])
+    while len(list_1) > 0:
+        temp_list.append(list_1[0])
+        list_1.remove(list_1[0])
+    while len(list_2) > 0:
+        temp_list.append(list_2[0])
+        list_2.remove(list_2[0])
+    return temp_list
+
+def BubbleSort(data):
+    for i in range(len(data)-1):
+        for j in range(len(data)-1):
+            if data[j] > data[j+1]:
+                temp = data[j]
+                data[j] = data[j+1]
+                data[j+1] = temp
+    return data
+
+def compare_algo(data_set_size, test_data):
+    times_bubble = []
+    times_merge = []
+    for i in range(num_datasets):
+        dataset = test_data[i]
+        dataset_copy = dataset.copy()
+
+        start_time_1 = time.time()
+        sorted_list_bubble = BubbleSort(dataset)  
+        end_time_1 = time.time()
+        elapsed_time_1 = end_time_1 - start_time_1
+        times_bubble.append(elapsed_time_1)
+   
+
+        start_time_2 = time.time()
+        fp = 0
+        rp = (data_set_size - 1)
+        sorted_list_merge = merge_sort(dataset_copy, fp, rp) 
+        end_time_2 = time.time()
+        elapsed_time_2 = end_time_2 - start_time_2
+        times_merge.append(elapsed_time_2)
+
+    return times_bubble, times_merge
+
+def time_analysis(times_bubble, times_merge,data_set_size,num_datasets):
+    mean_t_bubble = round(statistics.mean(times_bubble), 5)
+    print(f"The mean execution time for bubble sort on a data set size of {data_set_size} over {num_datasets} data sets is {mean_t_bubble} seconds")
+    mean_t_merge = round(statistics.mean(times_merge), 5)
+    print(f"The mean execution time for merge sort on a data set size of {data_set_size} over {num_datasets} data sets is {mean_t_merge} seconds")
+    if mean_t_bubble > mean_t_merge:
+        mean_difference = mean_t_bubble - mean_t_merge
+        print(f"Merge sort has a faster execuition time than Bubble sort by {mean_difference} seconds")
+    elif mean_t_merge > mean_t_bubble:
+        mean_difference = mean_t_merge - mean_t_bubble
+        print(f"Bubble sort has a faster execuition time than Merge sort by {mean_difference} seconds")
+    else:
+        mean_difference = 0
+
+    return mean_t_bubble, mean_t_merge
+
+
+
+data_set_sizes = []
+mean_times_bubble = []
+mean_times_merge = []
+num_datasets = 10
+finished = False
+while finished != True:
+    data_set_size = int(input("Enter dataset size: "))
+    data_set_sizes.append(data_set_size)
+    test_data = create_test_set(data_set_size, num_datasets)
+    times_bubble, times_merge = compare_algo(data_set_size, test_data)
+    mean_t_bubble, mean_t_merge = time_analysis(times_bubble, times_merge,data_set_size, num_datasets)
+    mean_times_bubble.append(mean_t_bubble)
+    mean_times_merge.append(mean_t_merge)
+    again = input("Would you like to continue comparing the 2 sort algos? ")
+    if again.lower() == "y":
+        continue
+    else:
+        finished = True
+print(data_set_sizes)
+print(mean_times_bubble)
+print(mean_times_merge)
+
+
