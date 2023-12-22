@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 import random
 import time
 import statistics
@@ -80,16 +81,26 @@ def time_analysis(times_bubble, times_merge,data_set_size,num_datasets):
     print(f"The mean execution time for merge sort on a data set size of {data_set_size} over {num_datasets} data sets is {mean_t_merge} seconds")
     if mean_t_bubble > mean_t_merge:
         mean_difference = mean_t_bubble - mean_t_merge
-        print(f"Merge sort has a faster execuition time than Bubble sort by {mean_difference} seconds")
+        print(f"Merge sort has a faster execuition time than Bubble sort by {round(mean_difference,5)} seconds")
     elif mean_t_merge > mean_t_bubble:
         mean_difference = mean_t_merge - mean_t_bubble
-        print(f"Bubble sort has a faster execuition time than Merge sort by {mean_difference} seconds")
+        print(f"Bubble sort has a faster execuition time than Merge sort by {round(mean_difference,5)} seconds")
     else:
         mean_difference = 0
 
     return mean_t_bubble, mean_t_merge
 
-
+def graph(data_set_sizes, mean_times_bubble, mean_times_merge):
+   x = np.array(data_set_sizes)
+   y1 = np.array(mean_times_bubble)
+   y2 = np.array(mean_times_merge)
+   plt.plot(x, y1, "-b", label = "Bubble Sort")
+   plt.plot(x, y2, "-r", label="Merge Sort")
+   plt.title('Bubble Sort vs Merge Sort Runtimes')
+   plt.xlabel('Input Size')
+   plt.ylabel('Runtime (seconds)')
+   plt.legend(loc="upper left")
+   plt.show()
 
 data_set_sizes = []
 mean_times_bubble = []
@@ -97,7 +108,7 @@ mean_times_merge = []
 num_datasets = 10
 finished = False
 while finished != True:
-    data_set_size = int(input("Enter dataset size: "))
+    data_set_size = int(input("\n Enter dataset size: "))
     data_set_sizes.append(data_set_size)
     test_data = create_test_set(data_set_size, num_datasets)
     times_bubble, times_merge = compare_algo(data_set_size, test_data)
@@ -109,8 +120,4 @@ while finished != True:
         continue
     else:
         finished = True
-print(data_set_sizes)
-print(mean_times_bubble)
-print(mean_times_merge)
-
-
+print(graph(data_set_sizes,mean_times_bubble, mean_times_merge))
